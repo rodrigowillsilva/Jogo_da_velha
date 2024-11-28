@@ -37,6 +37,11 @@
             // document.getElementById('inputContainer').style.display = 'none';
             // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
 
+            console.log('Iniciando o jogo...');
+
+            // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
+            ProcurarJogo(document.getElementById('roomName').value, document.getElementById('playerName').value, handleCellClick, startGame, endGame);
+
         }
 
         function generateGameBoard() {
@@ -68,6 +73,7 @@
                 PublicarMensagem('jogada', `${row} ${col}`);
             }
         }
+        
 
         window.handleCellClick = handleCellClick;
         window.generateGameBoard = generateGameBoard;
