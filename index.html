@@ -23,7 +23,7 @@
 
     <script type="module">
         // Remova ou comente a linha de importação
-        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
+        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem, character } from './backend/server.js';
 
         // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
@@ -91,7 +91,7 @@
             // check if the cell is empty
             if (button.textContent === '') {
                 // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
-                PublicarMensagem('jogada', `${row} ${col}`);
+                PublicarMensagem('jogada', `${row} ${col} ${character}`);
             }
         }
         

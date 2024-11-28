@@ -11,7 +11,7 @@ let frontHandleUIUpdate;
 let frontStartGame;
 let frontEndGame;
 
-let character = 'X';
+export let character = 'X';
 
 // Conecte-se ao HiveMQ
 export function InicializaConexaoMQTT(onConnectCallback) {
@@ -77,12 +77,12 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
 
         console.log(`Jogada recebida: ${message.toString()}`);
 
-        const [row, col] = message.toString().split(' ');
+        const [row, col, char] = message.toString().split(' ');
 
-        frontHandleUIUpdate(row, col, character);
+        frontHandleUIUpdate(row, col, char);
 
         // Atualiza o estado do jogo
-        game.board[row][col] = character;
+        game.board[row][col] = char;
 
         // Verifica se o jogo acabou
         // Verifica se o jogador ganhou
