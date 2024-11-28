@@ -11,7 +11,7 @@ let frontHandleUIUpdate;
 let frontStartGame;
 let frontEndGame;
 
-let character = '-';
+let character = 'X';
 
 // Conecte-se ao HiveMQ
 export function InicializaConexaoMQTT(onConnectCallback) {
@@ -38,20 +38,15 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
         const [action, message] = body.toString().split(' ');
         console.log(`nomeJogador: ${nomeJogador} nome do outro jogador: ${message}`);
 
-        console.log('chegou aqui');
-
         if (nomeJogador === message) {
             return;
         }
-
-        console.log('chegou aqui 2');
 
         if (action === 'ProcurarJogador') {
 
             console.log(`Player ${message} encontrado!`);
 
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
-            character = 'O';
 
             game.players.push(message);
 
@@ -65,7 +60,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
             console.log(`Player ${message} encontrado!`);
 
             game.players.push(message);
-            character = 'X';
+            character = 'O';
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
             frontStartGame();
