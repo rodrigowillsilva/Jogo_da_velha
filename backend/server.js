@@ -106,6 +106,34 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
 
 }
 
+function checkWinner() {
+    // Verifica se o jogador ganhou
+    // Verifica as linhas
+    for (let i = 0; i < 3; i++) {
+        if (game.board[i][0] === character && game.board[i][1] === character && game.board[i][2] === character) {
+            return character;
+        }
+    }
+
+    // Verifica as colunas
+    for (let i = 0; i < 3; i++) {
+        if (game.board[0][i] === character && game.board[1][i] === character && game.board[2][i] === character) {
+            return character;
+        }
+    }
+
+    // Verifica as diagonais
+    if (game.board[0][0] === character && game.board[1][1] === character && game.board[2][2] === character) {
+        return character;
+    }
+
+    if (game.board[0][2] === character && game.board[1][1] === character && game.board[2][0] === character) {
+        return character;
+    }
+
+    return '';
+}
+
 
 export function PublicarMensagem(topic, message) {
     publishMessage(`JogoDaVelha/${game.gameId}/${topic}`, message);
