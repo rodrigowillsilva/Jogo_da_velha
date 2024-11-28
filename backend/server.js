@@ -109,6 +109,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
 export function PublicarMensagem(topic, message) {
     publishMessage(`JogoDaVelha/${game.gameId}/${topic}`, message);
+    console.log(`Mensagem publicada: ${message}`);
 }
 
 export function PrintGameInfo() {
