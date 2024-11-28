@@ -13,7 +13,7 @@
     <div id="inputContainer">
         <input type="text" id="playerName" placeholder="Nome do Jogador">
         <input type="text" id="roomName" placeholder="Nome da Sala">
-        <button id="searchGameButton" onclick="searchButton()">Iniciar Jogo</button>
+        <button id="searchGameButton" onclick="startGame()">Iniciar Jogo</button>
     </div>
     <div id="gameContainer">
         <table id="gameBoard">
@@ -22,74 +22,16 @@
     </div>
 
     <script type="module">
-        // Remova ou comente a linha de importação
-        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
+        import { startGame, generateGameBoard, InicializaConexaoMQTT } from './game.js';
 
-        // Gera o tabuleiro do jogo ao carregar a página
+        // Chama a função ao carregar a página
         window.onload = function () {
             generateGameBoard();
-
             InicializaConexaoMQTT();
         };
 
-        function searchButton() {
-            // Esconde o contêiner de entrada
-            // document.getElementById('inputContainer').style.display = 'none';
-            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
-
-            // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
-            ProcurarJogo(document.getElementById('roomName').value, document.getElementById('playerName').value, handleCellClick, startGame, endGame);
-
-        }
-
-        function startGame() {
-            // Exibe o contêiner do jogo
-            // document.getElementById('gameContainer').style.display = 'block';
-            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
-            console.log('Início de jogo...');
-        }
-
-        function endGame() {
-            // Exibe o contêiner de entrada
-            // document.getElementById('inputContainer').style.display = 'block';
-            // Aqui você pode adicionar outras funcionalidades ao finalizar o jogo
-            console.log('Fim de jogo...');
-        }
-
-        function generateGameBoard() {
-            const board = document.getElementById('gameBoard');
-            board.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                const row = document.createElement('tr');
-                for (let j = 0; j < 3; j++) {
-                    const cell = document.createElement('td');
-                    const button = document.createElement('button');
-                    button.textContent = '';
-                    button.className = 'board-button';
-                    button.addEventListener('click', () => handleCellClick(button));
-                    cell.appendChild(button);
-                    row.appendChild(cell);
-                }
-                board.appendChild(row);
-            }
-        }
-
-        function handleCellClick(button) {
-            // get the cell's row and column
-            const row = button.parentElement.parentElement.rowIndex;
-            const col = button.parentElement.cellIndex;
-
-            // check if the cell is empty
-            if (button.textContent === '') {
-                // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
-                PublicarMensagem('jogada', `${row} ${col}`);
-            }
-        }
-        
-
-        window.handleCellClick = handleCellClick;
-        window.generateGameBoard = generateGameBoard;
-        window.searchButton = searchButton;
+        // Torna a função startGame acessível globalmente
+        window.startGame = startGame;
     </script>
 </body>
 </html>
