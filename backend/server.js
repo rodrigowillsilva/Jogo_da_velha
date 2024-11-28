@@ -43,9 +43,9 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
         if (action === 'ProcurarJogador') {
 
-            console.log(`Player ${game.players[i].name} está no jogo`);
+            console.log(`Player ${message} encontrado!`);
 
-            PublicarMensagem(`descoberta`, `JogadorEncontrado ${JSON.stringify(playerInfo)}`);
+            PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
             character = 'O';
 
             game.players.push(message);
@@ -57,7 +57,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
         }
         else if (action === 'JogadorEncontrado') {
 
-            console.log(`Player ${game.players[i].name} está no jogo`);
+            console.log(`Player ${message} encontrado!`);
 
             game.players.push(message);
             character = 'X';
