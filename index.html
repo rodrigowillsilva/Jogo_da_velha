@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
     <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
     <h1>Jogo da Velha</h1>
     <div id="inputContainer">
@@ -19,13 +21,15 @@
     </div>
 
     <script>
+        // Gera o tabuleiro do jogo ao carregar a página
+        window.onload = function () {
+            generateGameBoard();
+        };
+
         function startGame() {
             // Esconde o contêiner de entrada
             document.getElementById('inputContainer').style.display = 'none';
-            // Mostra o contêiner do jogo
-            document.getElementById('gameContainer').style.display = 'block';
-            // Gera o tabuleiro do jogo
-            generateGameBoard();
+            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
         }
 
         function generateGameBoard() {
@@ -58,4 +62,5 @@
         }
     </script>
 </body>
+
 </html>

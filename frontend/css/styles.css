@@ -30,9 +30,10 @@ h1 {
   cursor: pointer;
 }
 
-/* Contêiner do jogo */
+* Contêiner do jogo */
 #gameContainer {
-  display: none;
+  /* Remova ou comente a linha abaixo */
+  /* display: none; */
   margin: 0 auto;
   width: 300px;
 }
