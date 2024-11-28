@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
     <link rel="stylesheet" href="./frontend/css/styles.css">
 </head>
-
 <body>
     <h1>Jogo da Velha</h1>
     <div id="inputContainer">
@@ -21,8 +19,8 @@
     </div>
 
     <script>
-        // Importar os arquivos
-        import {InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem} from './backend/server.js';
+        // Remova ou comente a linha de importação
+        // import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
 
         // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
@@ -65,5 +63,4 @@
         }
     </script>
 </body>
-
 </html>
