@@ -13,7 +13,7 @@
     <div id="inputContainer">
         <input type="text" id="playerName" placeholder="Nome do Jogador">
         <input type="text" id="roomName" placeholder="Nome da Sala">
-        <button id="searchGameButton" onclick="startGame()">Iniciar Jogo</button>
+        <button id="searchGameButton" onclick="sreachButton()">Iniciar Jogo</button>
     </div>
     <div id="gameContainer">
         <table id="gameBoard">
@@ -32,16 +32,21 @@
             InicializaConexaoMQTT();
         };
 
-        function startGame() {
+        function sreachButton() {
             // Esconde o contêiner de entrada
             // document.getElementById('inputContainer').style.display = 'none';
             // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
 
-            
-
             // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
             ProcurarJogo(document.getElementById('roomName').value, document.getElementById('playerName').value, handleCellClick, startGame, endGame);
 
+        }
+
+        function startGame() {
+            // Exibe o contêiner do jogo
+            // document.getElementById('gameContainer').style.display = 'block';
+            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
+            console.log('Início de jogo...');
         }
 
         function endGame() {
@@ -84,7 +89,7 @@
 
         window.handleCellClick = handleCellClick;
         window.generateGameBoard = generateGameBoard;
-        window.startGame = startGame;
+        window.searchButton = sreachButton;
     </script>
 </body>
 </html>
