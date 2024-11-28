@@ -20,17 +20,20 @@
 
     <script>
         // Remova ou comente a linha de importação
-        // import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
+        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
 
         // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
             generateGameBoard();
+
+            InicializaConexaoMQTT();
         };
 
         function startGame() {
             // Esconde o contêiner de entrada
-            document.getElementById('inputContainer').style.display = 'none';
+            // document.getElementById('inputContainer').style.display = 'none';
             // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
+
         }
 
         function generateGameBoard() {
@@ -51,14 +54,15 @@
             }
         }
 
-        let currentPlayer = 'X';
-
         function handleCellClick(button) {
+            // get the cell's row and column
+            const row = button.parentElement.parentElement.rowIndex;
+            const col = button.parentElement.cellIndex;
+
+            // check if the cell is empty
             if (button.textContent === '') {
-                button.textContent = currentPlayer;
-                // Alterna entre jogadores
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                // Aqui você pode adicionar a lógica para verificar vitória ou empate
+                // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
+                PublicarMensagem('jogada', `${row} ${col}`);
             }
         }
     </script>

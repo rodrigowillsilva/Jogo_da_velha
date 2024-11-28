@@ -7,6 +7,12 @@ const { Game} = gameModels;
 const game = new Game("gameId");
 const nomeJogador = "playerName";
 
+let frontHandleCellClick;
+let frontStartGame;
+let frontEndGame;
+
+let character = '-';
+
 // Conecte-se ao HiveMQ
 export function InicializaConexaoMQTT(onConnectCallback) {
     connectMQTT(() => {
@@ -16,7 +22,7 @@ export function InicializaConexaoMQTT(onConnectCallback) {
     });
 }
 
-export function ProcurarJogo(gameId, playerName) {
+export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback) {
     game.gameId = gameId;
     game.players = [playerName];
     game.gameStatus = 'waiting';
@@ -24,6 +30,9 @@ export function ProcurarJogo(gameId, playerName) {
     game.messages = [];
 
     nomeJogador = playerName;
+    frontHandleCellClick = frontHandleCellClickCallback;
+    frontStartGame = frontStartGameCallback;
+    frontEndGame = frontEndGameCallback;
 
     subscribeToTopic(`JogoDaVelha/${gameId}/descoberta`, (body) => {
         const [action, message] = body.toString().split(' ');
@@ -37,10 +46,12 @@ export function ProcurarJogo(gameId, playerName) {
             console.log(`Player ${game.players[i].name} está no jogo`);
 
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${JSON.stringify(playerInfo)}`);
+            character = 'O';
 
             game.players.push(message);
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
+            frontStartGame();
             startGame();
 
         }
@@ -49,8 +60,10 @@ export function ProcurarJogo(gameId, playerName) {
             console.log(`Player ${game.players[i].name} está no jogo`);
 
             game.players.push(message);
+            character = 'X';
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
+            frontStartGame();
             startGame();
         }
 
@@ -61,6 +74,26 @@ export function ProcurarJogo(gameId, playerName) {
 
     subscribeToTopic(`JogoDaVelha/${gameId}/jogada`, (message) => {
         // Para jogadores receberem o estado do jogo do host e atualizarem seu front-end
+
+        console.log(`Jogada recebida: ${message.toString()}`);
+
+        const [row, col] = message.toString().split(' ');
+
+        frontHandleCellClick(row, col, character);
+
+        // Atualiza o estado do jogo
+        game.board[row][col] = character;
+
+        // Verifica se o jogo acabou
+        // Verifica se o jogador ganhou
+        const winner = checkWinner();
+        if (winner) {
+            game.winner = winner;
+            game.gameStatus = 'finished';
+            console.log(`O jogador ${winner} ganhou!`);
+
+            frontEndGame(winner);
+        }
     });
 
 
@@ -75,7 +108,7 @@ export function ProcurarJogo(gameId, playerName) {
 
 
 export function PublicarMensagem(topic, message) {
-    publishMessage(`B4ttle/${game.gameId}/${topic}`, message);
+    publishMessage(`JogoDaVelha/${game.gameId}/${topic}`, message);
 }
 
 export function PrintGameInfo() {
@@ -88,6 +121,8 @@ function startGame() {
     game.gameStatus = 'playing';
 
 }
+
+
 
 
 
