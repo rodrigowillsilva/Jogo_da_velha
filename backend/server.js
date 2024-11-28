@@ -36,6 +36,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
     subscribeToTopic(`JogoDaVelha/${gameId}/descoberta`, (body) => {
         const [action, message] = body.toString().split(' ');
+        console.log(`nomeJogador: ${nomeJogador} nome do outro jogador: ${message}`);
 
         if (nomeJogador === message) {
             return;
