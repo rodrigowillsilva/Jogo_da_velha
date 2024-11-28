@@ -19,9 +19,9 @@ export class Game {
     // Outros métodos conforme necessário
 }
 
-// // Exportando a classe Game e o array gameModels
-// const gameModels = {
-//     Game
-// };
+// Exportando a classe Game e o array gameModels
+const gameModels = {
+    Game
+};
 
-//export default gameModels;
+export default gameModels;

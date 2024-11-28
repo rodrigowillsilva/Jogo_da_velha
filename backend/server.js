@@ -1,8 +1,8 @@
 import mqttServices from './mqttServices.js';
-import Game from './gameModel.js';
+import gameModels from './gameModel.js';
 
 const { connectMQTT, subscribeToTopic, publishMessage, unsubscribeFromTopic } = mqttServices;
-//const { Game} = gameModels;
+const { Game} = gameModels;
 
 const game = new Game("gameId");
 const nomeJogador = "playerName";
