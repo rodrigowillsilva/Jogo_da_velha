@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
@@ -8,12 +9,13 @@
     <!-- Adicionando o script da biblioteca MQTT.js via CDN -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
+
 <body>
     <h1>Jogo da Velha</h1>
     <div id="inputContainer">
         <input type="text" id="playerName" placeholder="Nome do Jogador">
         <input type="text" id="roomName" placeholder="Nome da Sala">
-        <button id="searchGameButton" onclick="startGame()">Iniciar Jogo</button>
+        <button id="searchGameButton" onclick="searchButton()">Iniciar Jogo</button>
     </div>
     <div id="gameContainer">
         <table id="gameBoard">
@@ -22,16 +24,83 @@
     </div>
 
     <script type="module">
-        import { startGame, generateGameBoard, InicializaConexaoMQTT } from './game.js';
+        // Remova ou comente a linha de importação
+        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem } from './backend/server.js';
 
-        // Chama a função ao carregar a página
+        // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
             generateGameBoard();
+
             InicializaConexaoMQTT();
         };
 
-        // Torna a função startGame acessível globalmente
-        window.startGame = startGame;
+        function searchButton() {
+            // Esconde o contêiner de entrada
+            // document.getElementById('inputContainer').style.display = 'none';
+            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
+
+            // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
+            ProcurarJogo(document.getElementById('roomName').value, document.getElementById('playerName').value, handleCellClick, startGame, endGame);
+
+        }
+
+        function startGame() {
+            // Exibe o contêiner do jogo
+            // document.getElementById('gameContainer').style.display = 'block';
+            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
+            console.log('Início de jogo...');
+        }
+
+        function endGame() {
+            // Exibe o contêiner de entrada
+            // document.getElementById('inputContainer').style.display = 'block';
+            // Aqui você pode adicionar outras funcionalidades ao finalizar o jogo
+            console.log('Fim de jogo...');
+        }
+
+        function generateGameBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 3; j++) {
+                    const cell = document.createElement('td');
+                    const button = document.createElement('button');
+                    button.textContent = '';
+                    button.className = 'board-button';
+                    button.addEventListener('click', handleCellClick);
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        export function handleCellClick(event) {
+            const button = event.currentTarget;
+
+            if (!button.parentElement || !button.parentElement.parentElement) {
+                console.error('O parentElement do botão está undefined');
+                return;
+            }
+
+            const row = button.parentElement.parentElement.rowIndex;
+            const col = button.parentElement.cellIndex;
+
+            if (button.textContent === '') {
+                // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
+                // Por exemplo, marcar o botão com "X" ou "O"
+                button.textContent = 'X'; // ou 'O' dependendo do jogador
+                // Enviar a jogada para o servidor
+                PublicarMensagem('jogada', `${row} ${col}`);
+            }
+        }
+
+
+        window.handleCellClick = handleCellClick;
+        window.generateGameBoard = generateGameBoard;
+        window.searchButton = searchButton;
     </script>
 </body>
+
 </html>
