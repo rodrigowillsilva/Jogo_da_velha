@@ -5,7 +5,7 @@ const { connectMQTT, subscribeToTopic, publishMessage, unsubscribeFromTopic } = 
 const { Game} = gameModels;
 
 const game = new Game("gameId");
-const nomeJogador = "playerName";
+let nomeJogador = "playerName";
 
 let frontHandleCellClick;
 let frontStartGame;
