@@ -38,22 +38,24 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
         const [action, message] = body.toString().split(' ');
         console.log(`nomeJogador: ${nomeJogador} nome do outro jogador: ${message}`);
 
+        console.log('chegou aqui');
+
         if (nomeJogador === message) {
             return;
         }
 
+        console.log('chegou aqui 2');
+
         if (action === 'ProcurarJogador') {
 
             console.log(`Player ${message} encontrado!`);
-
-            unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
 
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
             character = 'O';
 
             game.players.push(message);
 
-            
+            unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
             frontStartGame();
             startGame();
 
@@ -72,7 +74,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
     });
 
-    PublicarMensagem(`descoberta`, `ProcurarJogador ${playerName}`);
+    PublicarMensagem(`descoberta`, `ProcurarJogador ${nomeJogador}`);
 
 
     subscribeToTopic(`JogoDaVelha/${gameId}/jogada`, (message) => {
