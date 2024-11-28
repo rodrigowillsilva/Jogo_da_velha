@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>B4ttleShip</title>
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="./frontend/css/styles.css">
+    <!-- Adicionando o script da biblioteca MQTT.js via CDN -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+    <h1>B4ttleShip</h1>
+    <div class="input-container" id="inputContainer">
+        <input type="text" id="playerName" placeholder="Nome do Jogador">
+        <input type="text" id="roomName" placeholder="Nome da Sala">
+        <button id="searchGameButton" onclick="searchGame()">Procurar Jogo</button>
+    </div>
+
+    <!-- Conteúdo do jogo, inicialmente escondido -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <!-- Botão para começar o jogo -->
+        <button id="startGameButton" class="game-button" onclick="startGame()">Começar Jogo</button>
+        <div class="game-area">
+            <!-- Contêiner para os navios -->
+            <div class="ships-container" id="shipsContainer">
+                <!-- Navios serão gerados pelo JavaScript -->
+            </div>
+            <!-- Tabuleiro 10x10 -->
+            <table id="gameBoard">
+                <!-- As linhas e células serão geradas pelo JavaScript -->
+            </table>
+        </div>
+    </div>
+
+    <!-- Add this inside the <body> tag, preferably after the gameContainer -->
+    <div class="player-list-container" id="playerListContainer">
+        <h2>Jogadores</h2>
+        <ul id="playerList">
+            <!-- Player names will be appended here -->
+        </ul>
+    </div>
+
+    <!-- Seu script com a lógica do jogo -->
+    <script type="module">
+        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem, ColocarNavio } from './backend/server.js';
+
+        let lastClickedShip = null;
+
+        // Inicializa a conexão com o servidor MQTT
+        InicializaConexaoMQTT(() => {
+            console.log('Conexão com o servidor MQTT estabelecida');
+        });
+
+        function searchGame() {
+            const playerName = document.getElementById('playerName').value;
+            const roomName = document.getElementById('roomName').value;
+
+            // Procura um jogo com os valores fornecidos
+            ProcurarJogo(roomName, playerName, AdcionarJogador, () => {
+                console.log('Jogo Encontrado!');
+                // Esconde os campos de entrada e botão
+                document.getElementById('inputContainer').style.display = 'none';
+                // Mostra o conteúdo do jogo
+                document.getElementById('gameContainer').style.display = 'block';
+                // Gera o tabuleiro
+                generateGameBoard();
+                // Adiciona o jogador atual à lista
+                updatePlayerList({ name: playerName });
+            });
+        }
+
+        function startGame() {
+            console.log('Jogo Começou!');
+            // Gera os navios
+            generateShips();
+            // Oculta o botão de começar jogo
+            document.getElementById('startGameButton').style.display = 'none';
+            // Adiciona o jogador atual à lista (caso ainda não esteja)
+            const playerName = document.getElementById('playerName').value;
+            updatePlayerList({ name: playerName });
+        }
+
+        function generateGameBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = ''; // Limpa o tabuleiro antes de gerar
+            for (let i = 0; i < 10; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 10; j++) {
+                    const cell = document.createElement('td');
+                    const button = document.createElement('button');
+                    button.textContent = '';
+                    button.className = 'board-button';
+                    button.addEventListener('click', () => {
+                        handleCellClick(i, j, button);
+                    });
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        // Gera os navios
+        function generateShips() {
+            const shipsContainer = document.getElementById('shipsContainer');
+            shipsContainer.innerHTML = ''; // Limpa os navios antes de gerar
+            const ships = [
+                { name: 'Porta-Aviões', size: 5 },
+                { name: 'Encouraçado', size: 4 },
+                { name: 'Cruzador', size: 3 },
+                { name: 'Submarino', size: 3 },
+                { name: 'Destroyer', size: 2 }
+            ];
+
+            ships.forEach(ship => {
+                const shipDiv = document.createElement('div');
+                shipDiv.className = 'ship';
+                shipDiv.setAttribute('data-ship-name', ship.name);
+                shipDiv.addEventListener('click', () => {
+                    handleShipClick(ship, shipDiv);
+                });
+                for (let i = 0; i < ship.size; i++) {
+                    const shipPart = document.createElement('div');
+                    shipPart.className = 'ship-part';
+                    shipPart.setAttribute('data-ship-name', ship.name);
+                    shipDiv.appendChild(shipPart);
+                }
+                shipsContainer.appendChild(shipDiv);
+            });
+        }
+
+        // Manipula o clique no navio
+        function handleShipClick(ship, shipDiv) {
+            // Remove a classe 'selected' de qualquer navio previamente selecionado
+            const previousSelected = document.querySelector('.ship.selected');
+            if (previousSelected) {
+                previousSelected.classList.remove('selected');
+            }
+
+            // Adiciona a classe 'selected' ao navio clicado
+            shipDiv.classList.add('selected');
+
+            console.log(`Navio selecionado: ${ship.name} (tamanho: ${ship.size})`);
+            lastClickedShip = ship;
+        }
+
+        // Manipula o clique na célula do tabuleiro
+        function handleCellClick(i, j, button) {
+            if (!lastClickedShip) {
+                alert('Por favor, selecione um navio primeiro.');
+                return;
+            }
+
+            // Tenta colocar o navio horizontalmente a partir da célula clicada
+            if (canPlaceShip(i, j, lastClickedShip.size)) {
+                placeShip(i, j, lastClickedShip.size);
+                // Desabilita o navio clicado no contêiner de navios
+                disableShipButtons(lastClickedShip.name);
+                // Placeholder para chamada de função do servidor
+                publishShipPlacement(i, j, lastClickedShip);
+                // Zera a seleção do navio
+                lastClickedShip = null;
+            } else {
+                alert('Posição inválida para colocar o navio.');
+            }
+        }
+
+        // Verifica se o navio pode ser colocado na posição desejada
+        function canPlaceShip(i, j, size) {
+            // Verifica se o navio excede os limites do tabuleiro
+            if (j + size > 10) return false;
+            // Verifica se há sobreposição com outros navios
+            for (let x = j; x < j + size; x++) {
+                const cell = document.querySelector(`#gameBoard tr:nth-child(${i + 1}) td:nth-child(${x + 1}) button`);
+                if (cell.classList.contains('ship-placed')) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Coloca o navio no tabuleiro
+        function placeShip(i, j, size) {
+            for (let x = j; x < j + size; x++) {
+                const cell = document.querySelector(`#gameBoard tr:nth-child(${i + 1}) td:nth-child(${x + 1}) button`);
+                cell.classList.add('ship-placed');
+                cell.disabled = true;
+            }
+
+            // Atualiza visualmente o navio no contêiner de navios
+            const ships = document.querySelectorAll('.ship');
+            ships.forEach(ship => {
+                if (ship.getAttribute('data-ship-name') === lastClickedShip.name) {
+                    ship.classList.add('placed');
+                }
+            });
+
+            console.log(`Navio ${lastClickedShip.name} colocado na posição (${i}, ${j})`);
+        }
+
+        // Desabilita os botões do navio no contêiner de navios
+        function disableShipButtons(shipName) {
+            const ships = document.querySelectorAll('.ship');
+            ships.forEach(ship => {
+                if (ship.getAttribute('data-ship-name') === shipName) {
+                    ship.style.pointerEvents = 'none';
+                    ship.style.opacity = '0.5';
+                }
+            });
+        }
+
+        // Add this function within the <script type="module"> tag in index.html
+
+        function updatePlayerList(player) {
+            const playerList = document.getElementById('playerList');
+            const listItem = document.createElement('li');
+            listItem.textContent = player.name;
+            playerList.appendChild(listItem);
+        }
+
+        // Modify the AdcionarJogador function to call updatePlayerList
+        function AdcionarJogador(player) {
+            updatePlayerList(player);
+            console.log(`Jogador adicionado: ${player.name}`);
+        }
+
+        // Placeholder para chamada de função do servidor
+        function publishShipPlacement(i, j, ship) {
+            // Implementar a lógica para comunicar a colocação do navio ao servidor
+            // Por exemplo:
+            //PublicarMensagem(`shipPlacement`, JSON.stringify({ ship: ship.name, position: {i, j}, name: ship.name }));
+            ColocarNavio(i, j, ship.name);
+            console.log(`Navio ${ship.name} colocado na posição (${i}, ${j})`);
+        }
+
+        // Anexa funções ao objeto window
+        window.searchGame = searchGame;
+        window.startGame = startGame;
+    </script>
+</body>
+
+</html>
