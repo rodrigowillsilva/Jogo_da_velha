@@ -11,7 +11,11 @@ let frontHandleUIUpdate;
 let frontStartGame;
 let frontEndGame;
 
-export let character = 'X';
+let character = 'X';
+
+export function getCharacter() {
+    return character;
+}
 
 // Conecte-se ao HiveMQ
 export function InicializaConexaoMQTT(onConnectCallback) {
