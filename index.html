@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
@@ -9,7 +8,6 @@
     <!-- Adicionando o script da biblioteca MQTT.js via CDN -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
-
 <body>
     <h1>Jogo da Velha</h1>
     <div id="inputContainer">
@@ -68,7 +66,7 @@
                     const button = document.createElement('button');
                     button.textContent = '';
                     button.className = 'board-button';
-                    button.addEventListener('click', handleCellClick);
+                    button.addEventListener('click', () => handleCellClick(button));
                     cell.appendChild(button);
                     row.appendChild(cell);
                 }
@@ -76,31 +74,31 @@
             }
         }
 
-        export function handleCellClick(event) {
-            const button = event.currentTarget;
+        function handleUpdateBoard(row, col, char) {
+            const board = document.getElementById('gameBoard');
+            const cell = board.rows[row].cells[col];
+            cell.firstChild.textContent = char;
 
-            if (!button.parentElement || !button.parentElement.parentElement) {
-                console.error('O parentElement do botão está undefined');
-                return;
-            }
+            // desabilita o botão
+            cell.firstChild.disabled = true;
+        }
 
+        function handleCellClick(button) {
+            // get the cell's row and column
             const row = button.parentElement.parentElement.rowIndex;
             const col = button.parentElement.cellIndex;
 
+            // check if the cell is empty
             if (button.textContent === '') {
                 // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
-                // Por exemplo, marcar o botão com "X" ou "O"
-                button.textContent = 'X'; // ou 'O' dependendo do jogador
-                // Enviar a jogada para o servidor
                 PublicarMensagem('jogada', `${row} ${col}`);
             }
         }
-
+        
 
         window.handleCellClick = handleCellClick;
         window.generateGameBoard = generateGameBoard;
         window.searchButton = searchButton;
     </script>
 </body>
-
 </html>

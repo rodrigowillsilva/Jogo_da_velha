@@ -7,7 +7,7 @@ const { Game} = gameModels;
 const game = new Game("gameId");
 let nomeJogador = "playerName";
 
-let frontHandleCellClick;
+let frontHandleUIUpdate;
 let frontStartGame;
 let frontEndGame;
 
@@ -22,7 +22,7 @@ export function InicializaConexaoMQTT(onConnectCallback) {
     });
 }
 
-export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback) {
+export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, frontStartGameCallback, frontEndGameCallback) {
     game.gameId = gameId;
     game.players = [playerName];
     game.gameStatus = 'waiting';
@@ -30,7 +30,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
     game.messages = [];
 
     nomeJogador = playerName;
-    frontHandleCellClick = frontHandleCellClickCallback;
+    frontHandleUIUpdate = frontHandleUIUpdateCallback;
     frontStartGame = frontStartGameCallback;
     frontEndGame = frontEndGameCallback;
 
@@ -84,7 +84,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
         const [row, col] = message.toString().split(' ');
 
-        frontHandleCellClick(row, col, character);
+        frontHandleUIUpdate(row, col, character);
 
         // Atualiza o estado do jogo
         game.board[row][col] = character;
