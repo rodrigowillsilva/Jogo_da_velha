@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./frontend/css/styles.css">
 </head>
 
 <body>
@@ -21,6 +21,9 @@
     </div>
 
     <script>
+        // Importar os arquivos
+        import {InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem} from './backend/server.js';
+
         // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
             generateGameBoard();
