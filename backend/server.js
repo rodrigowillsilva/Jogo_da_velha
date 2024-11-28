@@ -46,12 +46,14 @@ export function ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, f
 
             console.log(`Player ${message} encontrado!`);
 
+            unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
+
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
             character = 'O';
 
             game.players.push(message);
 
-            unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
+            
             frontStartGame();
             startGame();
 
