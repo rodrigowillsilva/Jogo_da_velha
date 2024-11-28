@@ -43,11 +43,13 @@ h1 {
 
 /* Tabuleiro do jogo */
 #gameBoard {
-  border-collapse: collapse;
+  border-collapse: separate; /* Impede a fusão das bordas */
+  border-spacing: 0;         /* Remove o espaçamento entre as células */
+  border: 2px solid #2c3e50; /* Adiciona uma borda ao redor do tabuleiro */
 }
 
 #gameBoard td {
-  border: 2px solid #2c3e50;
+  border: 1px solid #2c3e50; /* Define bordas em todos os lados das células */
   width: 110px;
   height: 110px;
   padding: 0;
