@@ -99,7 +99,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
         for (let i = 0; i < 3; i++) {
             console.log(game.board[i]);
         }
-        
+
 
         // Verifica se o jogo acabou
         // Verifica se o jogador ganhou
@@ -124,29 +124,31 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
 }
 
 function checkWinner() {
-    // Verifica se o jogador ganhou
+    // Verifica se algum dos jogadores ganhou
     // Verifica as linhas
     for (let i = 0; i < 3; i++) {
-        if (game.board[i][0] === character && game.board[i][1] === character && game.board[i][2] === character) {
-            return character;
+        if (game.board[i][0] === game.board[i][1] && game.board[i][1] === game.board[i][2]) {
+            return game.board[i][0];
         }
     }
 
     // Verifica as colunas
-    for (let i = 0; i < 3; i++) {
-        if (game.board[0][i] === character && game.board[1][i] === character && game.board[2][i] === character) {
-            return character;
+    for (let j = 0; j < 3; j++) {
+        if (game.board[0][j] === game.board[1][j] && game.board[1][j] === game.board[2][j]) {
+            return game.board[0][j];
         }
     }
 
     // Verifica as diagonais
-    if (game.board[0][0] === character && game.board[1][1] === character && game.board[2][2] === character) {
-        return character;
+    if (game.board[0][0] === game.board[1][1] && game.board[1][1] === game.board[2][2]) {
+        return game.board[0][0];
     }
 
-    if (game.board[0][2] === character && game.board[1][1] === character && game.board[2][0] === character) {
-        return character;
+    if (game.board[0][2] === game.board[1][1] && game.board[1][1] === game.board[2][0]) {
+        return game.board[0][2];
     }
+
+    
 
     return '';
 }
