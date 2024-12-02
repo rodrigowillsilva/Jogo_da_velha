@@ -74,12 +74,13 @@
 
         function updatePlayersList(players) {
             const playersList = document.getElementById('playersList');
-            playersList.innerHTML = '';
-            players.forEach(player => {
-                const li = document.createElement('li');
-                li.textContent = player;
-                playersList.appendChild(li);
-            });
+            playersList.appendChild(players);
+            // playersList.innerHTML = '';
+            // players.forEach(player => {
+            //     const li = document.createElement('li');
+            //     li.textContent = player;
+            //     playersList.appendChild(li);
+            // });
         }
 
         function setStatusMessage(message) {
