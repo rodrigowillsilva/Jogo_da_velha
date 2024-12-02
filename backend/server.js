@@ -95,6 +95,12 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
         // Atualiza o estado do jogo
         game.board[row][col] = char;
 
+        // print the board
+        for (let i = 0; i < 3; i++) {
+            console.log(game.board[i]);
+        }
+        
+
         // Verifica se o jogo acabou
         // Verifica se o jogador ganhou
         const winner = checkWinner();
