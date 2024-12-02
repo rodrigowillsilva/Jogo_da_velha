@@ -1,16 +1,23 @@
 /* Estilos gerais */
 body {
-  background-color: #f0f8ff;
-  color: #333;
-  font-family: Arial, sans-serif;
+  background-color: #f0f8ff; /* Cor suave de fundo */
+  color: #333; /* Cor do texto */
+  font-family: 'Arial', sans-serif; /* Fonte moderna */
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
+/* Título */
 h1 {
   color: #2c3e50;
   margin: 20px 0;
   text-align: center;
+  font-size: 2rem;
 }
 
 /* Contêiner de entrada */
@@ -26,12 +33,97 @@ h1 {
   margin: 5px;
   font-size: 16px;
   width: 200px;
+  border: 2px solid #2c3e50; /* Adicionando borda ao input */
+  border-radius: 5px; /* Bordas arredondadas */
 }
 
 #inputContainer button {
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  background-color: #4d94ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#inputContainer button:hover {
+  background-color: #357ab7; /* Cor de hover */
+}
+
+/* Estilos gerais do tabuleiro */
+#gameBoard {
+  border-collapse: collapse;
+  width: 330px;
+  height: 330px;
+  margin: 20px auto;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Sombra suave */
+  background-color: #f4f4f9;
+  border-radius: 10px;
+}
+
+/* Estilos das células */
+#gameBoard td {
+  padding: 0;
+  text-align: center;
+  width: 33.33%;
+  height: 33.33%;
+  border: 3px solid black; /* Borda preta e mais grossa nas células */
+}
+
+/* Estilos dos botões (peças do jogo) */
+.board-button {
+  width: 100%;
+  height: 100%;
+  font-size: 3rem;
+  border: none;
+  background-color: #ffffff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border-radius: 10px;
+}
+
+.board-button:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.06); /* Efeito de hover mais destacado */
+}
+
+.board-button:active {
+  background-color: #ddd;
+  transform: scale(0.98);
+}
+
+/* Estilo para peças X e O */
+.board-button.x {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+.board-button.o {
+  color: #4d94ff;
+  font-weight: bold;
+}
+
+/* Estilo para bordas do tabuleiro */
+#gameBoard tr {
+  border-bottom: 3px solid black; /* Borda preta e mais grossa entre as linhas */
+  border-right: 3px solid black; /* Borda preta e mais grossa entre as linhas */
+  border-top: 4px solid black; /* Borda preta e mais grossa entre as linhas */
+}
+
+#gameBoard td:last-child {
+  border-right: 3px solid black; /* Borda preta e mais grossa entre as colunas */
+}
+
+#gameBoard tr:last-child td {
+  border-bottom: none;
+}
+
+#gameBoard td:last-child {
+  border-right: none;
 }
 
 /* Contêiner do jogo */
@@ -39,30 +131,21 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 30px;
 }
 
-/* Tabuleiro do jogo */
-#gameBoard {
-  border-collapse: collapse; /* Mescla as bordas adjacentes */
+/* Status da mensagem */
+#statusMessage {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  color: #2c3e50;
+  font-weight: bold;
 }
 
-#gameBoard td {
-  border: 1px solid #2c3e50; /* Bordas em todos os lados das células */
-  width: 110px;
-  height: 110px;
-  padding: 0;
-}
-
-.board-button {
-  width: 100%;
-  height: 100%;
-  font-size: 72px;
-  cursor: pointer;
-  background-color: #fff;
-  border: none; /* Sem bordas nos botões */
-  padding: 0;
-}
-
+/* Contêiner de jogadores */
 #playersContainer {
   position: absolute;
   top: 10px;
@@ -71,11 +154,57 @@ h1 {
   padding: 10px;
   border: 1px solid #2c3e50;
   border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave no contêiner de jogadores */
 }
 
-#statusMessage {
+/* Estilo para listas */
+ul {
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  list-style-type: none;
+  width: 300px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  margin: 10px 0;
+}
+
+/* Estilo para os itens da lista */
+ul li {
+  padding: 8px;
+  margin-bottom: 5px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+/* Efeito de hover nos itens da lista */
+ul li:hover {
+  background-color: #e1f5fe; /* Cor suave no hover */
+}
+
+/* Estilo para listas vazias */
+ul.empty {
+  background-color: #e9ecef;
+  color: #888;
   text-align: center;
-  font-size: 18px;
-  margin-top: 20px;
-  color: #2c3e50;
+}
+
+/* Estilo para listas de status */
+ul.status {
+  background-color: #eef7ff;
+  border: 1px solid #4d94ff;
+}
+
+ul.status li {
+  background-color: #cfe3ff;
+  color: #4d94ff;
+  font-weight: bold;
+}
+
+ul.status li:hover {
+  background-color: #a9c9ff;
+  cursor: pointer;
 }
