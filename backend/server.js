@@ -77,7 +77,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
     });
 
     PublicarMensagem(`descoberta`, `ProcurarJogador ${nomeJogador}`);
-
+    frontUpdatePlayerListCallback(game.players);
 
     subscribeToTopic(`JogoDaVelha/${gameId}/jogada`, (message) => {
         // Para jogadores receberem o estado do jogo do host e atualizarem seu front-end
