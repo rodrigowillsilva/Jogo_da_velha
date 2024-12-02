@@ -26,7 +26,8 @@ export function InicializaConexaoMQTT(onConnectCallback) {
     });
 }
 
-export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, frontStartGameCallback, frontEndGameCallback) {
+export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, 
+    frontStartGameCallback, frontEndGameCallback, frontUpdatePlayerListCallback) {
     game.gameId = gameId;
     game.players = [playerName];
     game.gameStatus = 'waiting';
@@ -53,9 +54,10 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
 
             game.players.push(message);
+            frontUpdatePlayerListCallback(game.players);
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
-            frontStartGame(game.players);
+            frontStartGame();
             startGame();
 
         }
@@ -64,6 +66,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
             console.log(`Player ${message} encontrado!`);
 
             game.players.push(message);
+            frontUpdatePlayerListCallback(game.players);
             character = 'O';
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);

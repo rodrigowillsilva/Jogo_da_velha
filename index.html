@@ -28,6 +28,8 @@
         <ul id="playersList"></ul>
     </div>
 
+    <div id="statusMessage"></div>
+
     <script type="module">
         // Remova ou comente a linha de importação
         import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem, getCharacter } from './backend/server.js';
@@ -46,22 +48,28 @@
 
             // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
             ProcurarJogo(document.getElementById('roomName').value,
-            document.getElementById('playerName').value,
-            handleUpdateBoard,
-            startGame,
-            endGame);
+                document.getElementById('playerName').value,
+                handleUpdateBoard,
+                startGame,
+                endGame,
+                updatePlayersList);
 
         }
 
         function startGame(players) {
-            // Exibe o contêiner do jogo
-            document.getElementById('gameContainer').style.display = 'block';
-            // Esconde o contêiner de entrada
-            document.getElementById('inputContainer').style.display = 'none';
-            // Feedback para o jogador
-            alert('O jogo começou!');
             // Atualiza a lista de jogadores
             updatePlayersList(players);
+
+            alert('Jogo iniciado!');
+
+            // Define quem começa
+            if (getCharacter() === 'X') {
+                isMyTurn = true;
+                setStatusMessage('Sua vez de jogar!');
+            } else {
+                isMyTurn = false;
+                setStatusMessage('Vez do oponente.');
+            }
         }
 
         function updatePlayersList(players) {
@@ -72,6 +80,11 @@
                 li.textContent = player;
                 playersList.appendChild(li);
             });
+        }
+
+        function setStatusMessage(message) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
         }
 
         function endGame() {
@@ -103,20 +116,26 @@
             const board = document.getElementById('gameBoard');
             const cell = board.rows[row].cells[col];
             cell.firstChild.textContent = char;
-
-            // desabilita o botão
             cell.firstChild.disabled = true;
+
+            if (char !== getCharacter()) {
+                // Se foi a jogada do oponente, agora é sua vez
+                isMyTurn = true;
+                setStatusMessage('Sua vez de jogar!');
+            }
         }
 
         function handleCellClick(button) {
-            // get the cell's row and column
+            if (!isMyTurn) {
+                return;
+            }
             const row = button.parentElement.parentElement.rowIndex;
             const col = button.parentElement.cellIndex;
 
-            // check if the cell is empty
             if (button.textContent === '') {
-                // Aqui você pode adicionar outras funcionalidades ao clicar em uma célula
                 PublicarMensagem('jogada', `${row} ${col} ${getCharacter()}`);
+                isMyTurn = false; // Após jogar, aguarde sua vez
+                setStatusMessage('Vez do oponente.');
             }
         }
 
