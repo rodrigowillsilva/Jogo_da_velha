@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Jogo da Velha</title>
+    <link rel="stylesheet" href="./frontend/css/styles.css">
+
+    <!-- Adicionando o script da biblioteca MQTT.js via CDN -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+
+<body>
+    <h1>Jogo da Velha</h1>
+    <div id="inputContainer">
+        <input type="text" id="playerName" placeholder="Nome do Jogador">
+        <input type="text" id="roomName" placeholder="Nome da Sala">
+        <button id="searchGameButton" onclick="searchButton()">Iniciar Jogo</button>
+    </div>
+    <div id="gameContainer">
+        <table id="gameBoard">
+            <!-- O tabuleiro 3x3 será gerado pelo JavaScript -->
+        </table>
+    </div>
+
+    <div id="playersContainer">
+        <h3>Jogadores:</h3>
+        <ul id="playersList"></ul>
+    </div>
+
+    <div id="statusMessage"></div>
+
+    <script type="module">
+        // Remova ou comente a linha de importação
+        import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem, getCharacter } from './backend/server.js';
+
+        let allPlayers = [];
+        let isMyTurn = false;
+
+        // Gera o tabuleiro do jogo ao carregar a página
+        window.onload = function () {
+            generateGameBoard();
+
+            InicializaConexaoMQTT();
+        };
+
+        function searchButton() {
+            // Esconde o contêiner de entrada
+            // document.getElementById('inputContainer').style.display = 'none';
+            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
+
+            // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
+            ProcurarJogo(document.getElementById('roomName').value,
+                document.getElementById('playerName').value,
+                handleUpdateBoard,
+                startGame,
+                endGame,
+                updatePlayersList);
+
+        }
+
+        function startGame() {
+
+            alert('Jogo iniciado!');
+
+            // Define quem começa
+            if (getCharacter() === 'X') {
+                isMyTurn = true;
+                setStatusMessage('Sua vez de jogar!');
+            } else {
+                isMyTurn = false;
+                setStatusMessage('Vez do oponente.');
+            }
+        }
+
+        function updatePlayersList(players) {
+            const playersList = document.getElementById('playersList');
+            playersList.innerHTML = '';
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = player;
+                playersList.appendChild(li);
+            });
+        }
+
+        function setStatusMessage(message) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+        }
+
+        function endGame(winner) {
+            if(winner === 'empate')
+            {
+                console.log("djkahsjdhakshdaskh");
+                setStatusMessage("Empate!");    
+            }else{
+                setStatusMessage(`O jogador ${winner} ganhou!`);
+            }
+            disableGameBoard();
+            //alert(`O jogo terminou! O jogador ${winner} venceu. Por favor, recarregue a página para jogar novamente.`);
+        }
+
+        function disableGameBoard() {
+            const board = document.getElementById('gameBoard');
+            for (let i = 0; i < board.rows.length; i++) {
+                for (let j = 0; j < board.rows[i].cells.length; j++) {
+                    const button = board.rows[i].cells[j].firstChild;
+                    button.disabled = true;
+                }
+            }
+        }
+
+        function generateGameBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const row = document.createElement('tr');
+                for (let j = 0; j < 3; j++) {
+                    const cell = document.createElement('td');
+                    const button = document.createElement('button');
+                    button.textContent = '';
+                    button.className = 'board-button';
+                    button.addEventListener('click', () => handleCellClick(button));
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function handleUpdateBoard(row, col, char) {
+            const board = document.getElementById('gameBoard');
+            const cell = board.rows[row].cells[col];
+            cell.firstChild.textContent = char;
+            cell.firstChild.disabled = true;
+
+            if (char !== getCharacter()) {
+                // Se foi a jogada do oponente, agora é sua vez
+                isMyTurn = true;
+                setStatusMessage('Sua vez de jogar!');
+            }
+        }
+
+        function handleCellClick(button) {
+            if (!isMyTurn) {
+                return;
+            }
+            const row = button.parentElement.parentElement.rowIndex;
+            const col = button.parentElement.cellIndex;
+
+            if (button.textContent === '') {
+                PublicarMensagem('jogada', `${row} ${col} ${getCharacter()}`);
+                isMyTurn = false; // Após jogar, aguarde sua vez
+                setStatusMessage('Vez do oponente.');
+            }
+        }
+
+
+        window.handleCellClick = handleCellClick;
+        window.generateGameBoard = generateGameBoard;
+        window.searchButton = searchButton;
+    </script>
+</body>
+
+</html>

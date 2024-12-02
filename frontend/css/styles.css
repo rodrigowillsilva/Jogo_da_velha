@@ -1,0 +1,81 @@
+/* Estilos gerais */
+body {
+  background-color: #f0f8ff;
+  color: #333;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  color: #2c3e50;
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* Contêiner de entrada */
+#inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#inputContainer input {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+  width: 200px;
+}
+
+#inputContainer button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Contêiner do jogo */
+#gameContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tabuleiro do jogo */
+#gameBoard {
+  border-collapse: collapse; /* Mescla as bordas adjacentes */
+}
+
+#gameBoard td {
+  border: 1px solid #2c3e50; /* Bordas em todos os lados das células */
+  width: 110px;
+  height: 110px;
+  padding: 0;
+}
+
+.board-button {
+  width: 100%;
+  height: 100%;
+  font-size: 72px;
+  cursor: pointer;
+  background-color: #fff;
+  border: none; /* Sem bordas nos botões */
+  padding: 0;
+}
+
+#playersContainer {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f0f8ff;
+  padding: 10px;
+  border: 1px solid #2c3e50;
+  border-radius: 5px;
+}
+
+#statusMessage {
+  text-align: center;
+  font-size: 18px;
+  margin-top: 20px;
+  color: #2c3e50;
+}
