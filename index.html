@@ -60,20 +60,17 @@
         }
 
         function startGame() {
-
-            alert('Jogo iniciado!');
-
-            // Define quem começa
             if (getCharacter() === 'X') {
                 isMyTurn = true;
-                setStatusMessage('Sua vez de jogar!');
+                setStatusMessage('Sua vez de jogar!', "success");
             } else {
                 isMyTurn = false;
-                setStatusMessage('Vez do oponente.');
+                setStatusMessage('Vez do oponente.', "error");
             }
         }
 
         function updatePlayersList(players) {
+            allPlayers = players;
             const playersList = document.getElementById('playersList');
             playersList.innerHTML = '';
             players.forEach(player => {
@@ -97,7 +94,7 @@
             }
             disableGameBoard();
             //alert(`O jogo terminou! O jogador ${winner} venceu. Por favor, recarregue a página para jogar novamente.`);
-        }
+        }   
 
         function disableGameBoard() {
             const board = document.getElementById('gameBoard');

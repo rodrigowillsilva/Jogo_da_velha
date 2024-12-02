@@ -48,12 +48,14 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
         }
 
         if (action === 'ProcurarJogador') {
-
             console.log(`Player ${message} encontrado!`);
 
-            PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
+            PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador} ${character}`);
 
             game.players.push(message);
+
+            game.players = game.players.sort((a, b) => a.localeCompare(b));
+
             frontUpdatePlayerListCallback(game.players);
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
@@ -107,6 +109,8 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
         // Verifica se o jogador ganhou
         
         let winner = checkWinner();
+        console.log(winner);
+
 
         if(count_jogadas === 9 && !winner)
         {
