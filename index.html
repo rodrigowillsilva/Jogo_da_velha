@@ -88,11 +88,20 @@
             statusElement.textContent = message;
         }
 
-        function endGame() {
-            // Exibe o contêiner de entrada
-            // document.getElementById('inputContainer').style.display = 'block';
-            // Aqui você pode adicionar outras funcionalidades ao finalizar o jogo
-            console.log('Fim de jogo...');
+        function endGame(winner) {
+            setStatusMessage(`O jogador ${winner} ganhou o jogo!`);
+            disableGameBoard();
+            alert(`O jogo terminou! O jogador ${winner} venceu. Por favor, recarregue a página para jogar novamente.`);
+        }
+
+        function disableGameBoard() {
+            const board = document.getElementById('gameBoard');
+            for (let i = 0; i < board.rows.length; i++) {
+                for (let j = 0; j < board.rows[i].cells.length; j++) {
+                    const button = board.rows[i].cells[j].firstChild;
+                    button.disabled = true;
+                }
+            }
         }
 
         function generateGameBoard() {

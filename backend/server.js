@@ -2,7 +2,7 @@ import mqttServices from './mqttServices.js';
 import gameModels from './gameModel.js';
 
 const { connectMQTT, subscribeToTopic, publishMessage, unsubscribeFromTopic } = mqttServices;
-const { Game} = gameModels;
+const { Game } = gameModels;
 
 const game = new Game("gameId");
 let nomeJogador = "playerName";
@@ -26,7 +26,7 @@ export function InicializaConexaoMQTT(onConnectCallback) {
     });
 }
 
-export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, 
+export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
     frontStartGameCallback, frontEndGameCallback, frontUpdatePlayerListCallback) {
     game.gameId = gameId;
     game.players = [playerName];
@@ -82,6 +82,10 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
     subscribeToTopic(`JogoDaVelha/${gameId}/jogada`, (message) => {
         // Para jogadores receberem o estado do jogo do host e atualizarem seu front-end
 
+        if (game.gameStatus === 'finished') {
+            return; // Ignora jogadas após o término do jogo
+        }
+
         console.log(`Jogada recebida: ${message.toString()}`);
 
         const [row, col, char] = message.toString().split(' ');
@@ -104,7 +108,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
     });
 
 
-   
+
     subscribeToTopic(`JogoDaVelha/${gameId}/chat`, (message) => {
         // Processa as mensagens do chat
         console.log(`Mensagem recebida: ${message.toString()}`);
