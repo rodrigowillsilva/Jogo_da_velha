@@ -55,7 +55,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback, fr
             game.players.push(message);
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
-            frontStartGame();
+            frontStartGame(game.players);
             startGame();
 
         }

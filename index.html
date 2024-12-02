@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <title>Jogo da Velha</title>
@@ -8,6 +9,7 @@
     <!-- Adicionando o script da biblioteca MQTT.js via CDN -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 </head>
+
 <body>
     <h1>Jogo da Velha</h1>
     <div id="inputContainer">
@@ -19,6 +21,11 @@
         <table id="gameBoard">
             <!-- O tabuleiro 3x3 será gerado pelo JavaScript -->
         </table>
+    </div>
+
+    <div id="playersContainer">
+        <h3>Jogadores:</h3>
+        <ul id="playersList"></ul>
     </div>
 
     <script type="module">
@@ -38,15 +45,33 @@
             // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
 
             // Procura um jogo disponível ProcurarJogo(gameId, playerName, frontHandleCellClickCallback, frontStartGameCallback, frontEndGameCallback)
-            ProcurarJogo(document.getElementById('roomName').value, document.getElementById('playerName').value, handleUpdateBoard, startGame, endGame);
+            ProcurarJogo(document.getElementById('roomName').value,
+            document.getElementById('playerName').value,
+            handleUpdateBoard,
+            startGame,
+            endGame);
 
         }
 
-        function startGame() {
+        function startGame(players) {
             // Exibe o contêiner do jogo
-            // document.getElementById('gameContainer').style.display = 'block';
-            // Aqui você pode adicionar outras funcionalidades ao iniciar o jogo
-            console.log('Início de jogo...');
+            document.getElementById('gameContainer').style.display = 'block';
+            // Esconde o contêiner de entrada
+            document.getElementById('inputContainer').style.display = 'none';
+            // Feedback para o jogador
+            alert('O jogo começou!');
+            // Atualiza a lista de jogadores
+            updatePlayersList(players);
+        }
+
+        function updatePlayersList(players) {
+            const playersList = document.getElementById('playersList');
+            playersList.innerHTML = '';
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = player;
+                playersList.appendChild(li);
+            });
         }
 
         function endGame() {
@@ -94,11 +119,12 @@
                 PublicarMensagem('jogada', `${row} ${col} ${getCharacter()}`);
             }
         }
-        
+
 
         window.handleCellClick = handleCellClick;
         window.generateGameBoard = generateGameBoard;
         window.searchButton = searchButton;
     </script>
 </body>
+
 </html>

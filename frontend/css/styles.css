@@ -62,3 +62,13 @@ h1 {
   border: none; /* Sem bordas nos botões */
   padding: 0;
 }
+
+#playersContainer {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f0f8ff;
+  padding: 10px;
+  border: 1px solid #2c3e50;
+  border-radius: 5px;
+}
