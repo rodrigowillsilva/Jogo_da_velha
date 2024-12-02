@@ -54,7 +54,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
             PublicarMensagem(`descoberta`, `JogadorEncontrado ${nomeJogador}`);
 
             game.players.push(message);
-            frontUpdatePlayerListCallback(message);
+            frontUpdatePlayerListCallback(game.players);
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
             frontStartGame();
@@ -66,7 +66,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
             console.log(`Player ${message} encontrado!`);
 
             game.players.push(message);
-            frontUpdatePlayerListCallback(message);
+            frontUpdatePlayerListCallback(game.players);
             character = 'O';
 
             unsubscribeFromTopic(`JogoDaVelha/${gameId}/descoberta`);
@@ -77,7 +77,7 @@ export function ProcurarJogo(gameId, playerName, frontHandleUIUpdateCallback,
     });
 
     PublicarMensagem(`descoberta`, `ProcurarJogador ${nomeJogador}`);
-    frontUpdatePlayerListCallback(nomeJogador);
+    frontUpdatePlayerListCallback(game.players);
 
     subscribeToTopic(`JogoDaVelha/${gameId}/jogada`, (message) => {
         // Para jogadores receberem o estado do jogo do host e atualizarem seu front-end

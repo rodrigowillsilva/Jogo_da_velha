@@ -34,6 +34,9 @@
         // Remova ou comente a linha de importação
         import { InicializaConexaoMQTT, ProcurarJogo, PublicarMensagem, getCharacter } from './backend/server.js';
 
+        let allPlayers = [];
+        let isMyTurn = false;
+
         // Gera o tabuleiro do jogo ao carregar a página
         window.onload = function () {
             generateGameBoard();
@@ -74,13 +77,12 @@
 
         function updatePlayersList(players) {
             const playersList = document.getElementById('playersList');
-            playersList.appendChild(players);
-            // playersList.innerHTML = '';
-            // players.forEach(player => {
-            //     const li = document.createElement('li');
-            //     li.textContent = player;
-            //     playersList.appendChild(li);
-            // });
+            playersList.innerHTML = '';
+            players.forEach(player => {
+                const li = document.createElement('li');
+                li.textContent = player;
+                playersList.appendChild(li);
+            });
         }
 
         function setStatusMessage(message) {
